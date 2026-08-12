@@ -92,6 +92,8 @@ jobs:
           gitee_owner: LiuYong-Kang1201
           # Gitee 项目名, 项目URL中可获取
           gitee_repo: taohuo-release
+          gitee_target_commitish: master
+          gitee_upload_retry_times: 3
           # Gitee api token
           gitee_token: ${{secrets.GITEE_TOKEN}}
           # Gitee Tag 名称, 提倡以v字母为前缀做为Release名称，例如v1.0或者v2.3.4
@@ -99,11 +101,10 @@ jobs:
           # Gitee release 名称
           gitee_release_name: v${{ steps.version.outputs.version_name }}
           # 上传的附件列表(多个文件)
-          gitee_files: app/release/*.apk
+          gitee_file_name: app-release.apk
+          gitee_file_path: app/release/app-release.apk
            # Gitee release 描述
           gitee_release_body: |
             - 版本号: ${{ steps.version.outputs.version_name }}
             - 版本代码: ${{ steps.version.outputs.version_code }}
             - 构建时间: ${{ github.event.head_commit.timestamp }}# optional
-          # Gitee 分支名称或者commit SHA
-          gitee_target_commitish: master# optional
