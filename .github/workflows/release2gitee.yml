@@ -69,7 +69,6 @@ jobs:
           fi
 
       - name: action-gitee-release
-        if: steps.check_tag.outputs.exists == 'false'
         uses: nICEnnnnnnnLee/action-gitee-release@v2.0.0
         with:
           # 执行的操作类型: create_release, upload_asset, delete_release, delete_asset, update_asset
