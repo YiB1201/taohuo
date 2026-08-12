@@ -88,7 +88,7 @@ jobs:
           # 上传的附件列表(多个文件)
           gitee_files: app/release/*.apk
           # Gitee release 描述
-          body: |
+          gitee_release_body: |
             ## 版本信息
             - 版本号: ${{ steps.version.outputs.version_name }}
             - 版本代码: ${{ steps.version.outputs.version_code }}
