@@ -68,28 +68,47 @@ jobs:
             echo "Tag $TAG does not exist, proceeding with release."
           fi
 
-      - name: action-gitee-release
-        uses: nICEnnnnnnnLee/action-gitee-release@v2.0.0
+      # - name: action-gitee-release
+      #   uses: nICEnnnnnnnLee/action-gitee-release@v2.0.0
+      #   with:
+      #     # 执行的操作类型: create_release, upload_asset, delete_release, delete_asset, update_asset
+      #     gitee_action: create_release
+      #     # Gitee 用户名, 项目URL中可获取
+      #     gitee_owner: LiuYong-Kang1201
+      #     # Gitee 项目名, 项目URL中可获取
+      #     gitee_repo: taohuo-release
+      #     gitee_target_commitish: master
+      #     gitee_upload_retry_times: 3
+      #     # Gitee api token
+      #     gitee_token: ${{ secrets.GITEE_TOKEN }}
+      #     # Gitee Tag 名称
+      #     gitee_tag_name: ${{ steps.version.outputs.tag_name }}
+      #     # Gitee release 名称
+      #     gitee_release_name: ${{ steps.version.outputs.tag_name }}
+      #     # 上传的附件列表(多个文件)
+      #     gitee_files: app/release/*.apk
+      #     # Gitee release 描述
+      #     gitee_release_body: |
+      #       ## 版本信息
+      #       - 版本号: ${{ steps.version.outputs.version_name }}
+      #       - 版本代码: ${{ steps.version.outputs.version_code }}
+      #       - 构建时间: ${{ github.event.head_commit.timestamp }}
+      - name: sync-github-release-to-gitee
+        # You may pin to the exact commit or the version.
+        # uses: trustedinster/sync-release-gitee@c91fb121df8bb3607b0d1294c31d649783bae120
+        uses: trustedinster/sync-release-gitee@v1.3
         with:
-          # 执行的操作类型: create_release, upload_asset, delete_release, delete_asset, update_asset
-          gitee_action: create_release
-          # Gitee 用户名, 项目URL中可获取
+          # gitee 用户名, 项目URL中可获取
           gitee_owner: LiuYong-Kang1201
-          # Gitee 项目名, 项目URL中可获取
+          # gitee 项目名, 项目URL中可获取
           gitee_repo: taohuo-release
-          gitee_target_commitish: master
-          gitee_upload_retry_times: 3
-          # Gitee api token
+          # gitee api token
           gitee_token: ${{ secrets.GITEE_TOKEN }}
-          # Gitee Tag 名称
-          gitee_tag_name: ${{ steps.version.outputs.tag_name }}
-          # Gitee release 名称
-          gitee_release_name: ${{ steps.version.outputs.tag_name }}
-          # 上传的附件列表(多个文件)
-          gitee_files: app/release/*.apk
-          # Gitee release 描述
-          gitee_release_body: |
-            ## 版本信息
-            - 版本号: ${{ steps.version.outputs.version_name }}
-            - 版本代码: ${{ steps.version.outputs.version_code }}
-            - 构建时间: ${{ github.event.head_commit.timestamp }}
+          # github 用户名, 项目URL中可获取
+          github_owner: YiB1201
+          # github 项目名, 项目URL中可获取
+          github_repo: taohuo
+          # 上传附件失败后的尝试次数
+          gitee_upload_retry_times: 3
+          # 是否开启debug模式
+          debug: # optional
