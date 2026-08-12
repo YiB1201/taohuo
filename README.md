@@ -1,332 +1,172 @@
-# 淘货 (Taohuo)
+# 🛒 校园二手交易平台 · 开发日志
 
-一款功能完善的 Android 二手交易平台应用，提供商品发布、即时通讯、收藏管理等功能。
+> 一个面向校园的二手闲置交易平台，从 0 到 1 的完整开发记录：选型、实现、踩坑、加固、上线。
 
-## 📱 项目简介
+**🔗 在线访问**：[https://taohuo.hsyz.online](https://taohuo.hsyz.online)
 
-淘货是一款基于 Android 平台的移动端购物应用，支持用户浏览商品、发布商品、实时聊天沟通、收藏管理等核心功能。应用采用前后端分离架构，通过 RESTful API 与后端服务通信，集成 Ably 实现跨平台实时通信（与网页端互通）。
+![部署-Vercel](https://img.shields.io/badge/部署-Vercel-000000?logo=vercel&logoColor=white)
+![数据库-Neon](https://img.shields.io/badge/数据库-Neon%20PostgreSQL-00c4b8?logo=postgresql&logoColor=white)
+![实时通信-Ably](https://img.shields.io/badge/实时通信-Ably-00b8d9)
+![存储-阿里云OSS](https://img.shields.io/badge/存储-阿里云%20OSS-ff6a00?logo=alibabacloud&logoColor=white)
+![认证-JWT](https://img.shields.io/badge/认证-JWT-000000?logo=jsonwebtokens&logoColor=white)
 
-## ✨ 核心功能
-
-### 1. 用户认证
-- 登录/注册功能
-- 密码明文切换（小眼睛图标）
-- 登录状态管理
-- 匿名浏览支持
-
-### 2. 商品管理
-- **发布商品**: 多图上传、价格输入、商品描述
-- **商品列表**: 网格布局展示，下拉刷新
-- **商品详情**: 详细信息展示，图片轮播预览
-- **图片选择**: 自定义多图选择器，支持预览和删除
-- **已售状态**: 自动同步商品状态
-- **我发布的**: 查看自己发布的所有商品
-- **我的收藏**: 收藏/取消收藏商品
-
-### 3. 实时聊天
-- **即时通讯**: 基于 Ably 的实时消息收发
-- **跨平台互通**: 与网页端 ably-js 消息互通
-- **离线缓存**: 网络恢复后自动同步消息
-- **会话管理**: 会话列表、删除会话
-- **未读提示**: 消息未读数角标
-- **屏蔽词**: 敏感词过滤功能
-
-### 4. 通知系统
-- **系统通知**: 新消息推送通知
-- **桌面角标**: 多厂商适配（华为、荣耀、三星、OPPO、vivo 等）
-- **点击跳转**: 通知点击直达聊天页面
-- **保活服务**: 前台服务维持连接
-
-### 5. UI/UX
-- **主题切换**: 黑色/白色背景应用图标切换
-- **暗黑模式**: 支持系统暗黑模式
-- **底部导航**: 广场、发布、消息、我的
-- **图片预览**: 全屏浏览，缩放交互
-- **动画效果**: 流畅的页面过渡动画
-
-### 6. 应用更新
-- **版本检测**: 自动检查最新版本
-- **APK 下载**: 应用内下载更新包
-- **安装引导**: 调起系统安装器
-
-## 🛠 技术栈
-
-### 开发语言
-- Java
-- 最低 SDK: 27 (Android 8.1)
-- 目标 SDK: 36 (Android 15)
-- 编译 SDK: 36 (Android 15)
-
-### 核心依赖
-
-| 依赖 | 版本 | 用途 |
-|------|------|------|
-| AndroidX AppCompat | 1.6.1 | Android 兼容性库 |
-| Material Design | 1.10.0 | Material Design 组件 |
-| ConstraintLayout | 2.1.4 | 约束布局 |
-| GridLayout | 1.0.0 | 网格布局 |
-| Retrofit | 3.0.0 | REST API 客户端 |
-| Gson Converter | 3.0.0 | JSON 序列化/反序列化 |
-| Glide | 4.16.0 | 图片加载与缓存 |
-| Ably | 1.8.0 | 实时通信（WebSocket） |
-| Gson | 2.14.0 | JSON 处理 |
-
-### 构建工具
-- Gradle 8.x
-- Android Gradle Plugin
-- ProGuard 代码混淆
-
-## 📂 项目结构
-
-```
-taohuo/
-├── app/
-│   ├── src/main/
-│   │   ├── java/com/taohuo/hsyz/
-│   │   │   ├── AblyManager.java              # Ably 实时通信管理
-│   │   │   ├── ApiClient.java                 # API 客户端封装
-│   │   │   ├── AppIconManager.java            # 应用图标切换管理
-│   │   │   ├── AppUpdater.java                # 应用更新检测
-│   │   │   ├── ChatActivity.java              # 聊天界面
-│   │   │   ├── ChatFilter.java                # 聊天屏蔽词过滤器
-│   │   │   ├── ChatKeepAliveService.java      # 聊天保活服务
-│   │   │   ├── ChatLocalStore.java            # 聊天本地存储
-│   │   │   ├── ChatMessage.java               # 聊天消息模型
-│   │   │   ├── ChatMessageAdapter.java        # 消息列表适配器
-│   │   │   ├── ConversationAdapter.java       # 会话列表适配器
-│   │   │   ├── FavoriteProductsActivity.java  # 我的收藏
-│   │   │   ├── FavoriteStore.java             # 收藏存储管理
-│   │   │   ├── GalleryAdapter.java            # 画廊适配器
-│   │   │   ├── ImageAdapter.java              # 图片适配器
-│   │   │   ├── ImagePreviewActivity.java      # 图片预览
-│   │   │   ├── ImagePagerAdapter.java         # 图片轮播适配器
-│   │   │   ├── LauncherBadgeHelper.java       # 桌面角标助手
-│   │   │   ├── LoginActivity.java             # 登录界面
-│   │   │   ├── LoginManager.java              # 登录状态管理
-│   │   │   ├── MainActivity.java              # 主界面
-│   │   │   ├── MarketFragment.java            # 商品广场碎片
-│   │   │   ├── MessageFragment.java           # 消息碎片
-│   │   │   ├── MineFragment.java              # 个人中心碎片
-│   │   │   ├── MyProductsActivity.java        # 我发布的商品
-│   │   │   ├── NotificationHelper.java        # 通知助手
-│   │   │   ├── OssUploader.java               # OSS 文件上传
-│   │   │   ├── PickImageFragment.java         # 图片选择碎片
-│   │   │   ├── ProductAdapter.java            # 商品适配器
-│   │   │   ├── ProductDetailActivity.java     # 商品详情
-│   │   │   ├── PublishProductFragment.java    # 发布商品碎片
-│   │   │   ├── SettingsActivity.java          # 设置界面
-│   │   │   ├── SplashActivity.java            # 启动页
-│   │   │   ├── SystemPermissionHelper.java    # 系统权限管理
-│   │   │   ├── TaohuoApp.java                 # 应用入口
-│   │   │   ├── ThemeModeManager.java          # 主题管理
-│   │   │   └── ZoomableImageView.java         # 可缩放图片视图
-│   │   │
-│   │   ├── res/
-│   │   │   ├── drawable/                      # 绘图资源
-│   │   │   ├── layout/                        # 布局文件
-│   │   │   ├── mipmap-*/                      # 图标资源
-│   │   │   ├── values/                        # 字符串、颜色、样式
-│   │   │   ├── values-night/                  # 暗黑模式资源
-│   │   │   └── xml/                           # XML 配置
-│   │   │
-│   │   └── AndroidManifest.xml                # 应用清单
-│   │
-│   └── build.gradle.kts                       # 模块构建配置
-│
-├── build.gradle.kts                           # 项目构建配置
-├── settings.gradle.kts                        # 项目设置
-├── gradle.properties                          # Gradle 属性
-└── local.properties                           # 本地环境配置
-```
-
-## 🔧 快速开始
-
-### 环境要求
-
-- JDK 11 或更高版本
-- Android Studio Hedgehog 或更高版本
-- Android SDK 36
-- Gradle 8.x
-
-### 构建步骤
-
-1. **克隆仓库**
-   ```bash
-   git clone https://github.com/YiB1201/taohuo.git
-   cd taohuo
-   ```
-
-2. **打开项目**
-   - 启动 Android Studio
-   - 选择 `File > Open`
-   - 选择项目根目录 `F:\taohuo`
-
-3. **同步 Gradle**
-   - Android Studio 会自动同步 Gradle
-   - 等待构建完成
-
-4. **运行应用**
-   - 连接 Android 设备或启动模拟器
-   - 点击运行按钮或按 `Shift + F10`
-
-### 手动构建（命令行）
-
-```bash
-# Windows (使用 Gradle Wrapper)
-.\gradlew.bat assembleDebug
-
-# 或直接使用系统 Gradle
-gradle assembleDebug
-```
-
-## 📋 权限说明
-
-### 必需权限
-
-| 权限 | 用途 |
-|------|------|
-| INTERNET | 网络请求，访问后端 API |
-| ACCESS_NETWORK_STATE | 判断网络状态，支持离线缓存 |
-| REQUEST_INSTALL_PACKAGES | 应用内下载安装更新包 |
-
-### 运行时权限
-
-| 权限 | 用途 |
-|------|------|
-| POST_NOTIFICATIONS | 发送消息通知 (Android 13+) |
-| READ_MEDIA_IMAGES | 读取图片（Android 13+） |
-| READ_EXTERNAL_STORAGE | 读取图片（Android 12 及以下） |
-
-### 角标权限（静默申请）
-
-| 权限 | 厂商 |
-|------|------|
-| com.huawei...CHANGE_BADGE | 华为/荣耀 |
-| com.hihonor...CHANGE_BADGE | 荣耀（MagicOS） |
-| com.sec.android...BADGE | 三星 |
-| com.oppo...SETTINGS | OPPO/OnePlus/Realme |
-| com.vivo...NOTIFICATION | vivo/iQOO |
-
-## 🎨 主要功能流程
-
-### 1. 发布商品流程
-```
-底部导航 "发布" → 选择图片（多图） → 填写商品信息（名称、描述、价格）
-→ 调用 OSS 上传 → 提交后端 API → 刷新商品列表
-```
-
-### 2. 聊天通讯流程
-```
-进入商品详情 → 点击"联系商家" → 打开聊天窗口
-→ 发送/接收消息 → Ably 实时推送
-→ 消息本地缓存 → 离线时队列存储 → 网络恢复后同步
-```
-
-### 3. 收藏商品流程
-```
-商品详情页 → 点击收藏按钮 → 存入本地数据库
-→ 我的收藏页面查看 → 支持取消收藏
-```
-
-### 4. 登录流程
-```
-启动页 → 检查登录状态 → 未登录跳转登录页
-→ 输入账号密码 → 调用后端验证 → 保存 Token
-→ 启动保活服务 → 进入主界面
-```
-
-## 🌐 API 对接
-
-应用通过 `ApiClient` 类统一管理所有后端接口调用：
-
-- **用户认证**: 登录、注册、状态检查
-- **商品管理**: 发布、获取列表、更新状态
-- **图片上传**: 调用 OSS 预签名 URL
-- **聊天功能**: Ably 频道订阅与消息发送
-- **收藏管理**: 添加/移除收藏
-
-## 💾 数据存储
-
-### 本地缓存
-- **SharedPreferences**: 用户登录状态、设置项
-- **SQLite/Room**: 聊天记录、收藏数据
-- **文件系统**: 图片缓存、离线数据
-
-### 离线支持
-- 消息离线缓存
-- 断线重连机制
-- 数据同步策略
-
-## 🔐 安全特性
-
-- HTTPS 加密传输
-- Token 认证机制
-- 敏感词过滤
-- ProGuard 代码混淆
-- 权限动态申请
-
-## 📱 多厂商适配
-
-### 应用图标
-- 黑色背景（默认）
-- 白色背景（设置中切换）
-
-### 桌面角标
-- 华为/荣耀 EMUI/HarmonyOS
-- 荣耀 MagicOS
-- 三星 Samsung Experience
-- OPPO/OnePlus/Realme ColorOS/OxygenOS
-- vivo/iQOO Funtouch OS
-
-### 后台保活
-- 前台服务（Foreground Service）
-- WakeLock 防休眠
-- 电池优化豁免引导
-- Ably WebSocket 长连接
-
-## 🚀 版本历史
-
-### v2.3 (当前版本)
-- 优化图片选择和预览功能
-- 改进聊天消息同步机制
-- 新增敏感词过滤功能
-- 增强通知和角标显示
-- UI 视觉升级
-- 主题切换优化
-
-## 📝 开发规范
-
-### 代码风格
-- Java CamelCase 命名规范
-- 统一的异常处理
-- 模块化设计
-- 注释清晰完整
-
-### 资源管理
-- Drawable 资源精简
-- 统一颜色主题
-- 响应式布局设计
-
-### 性能优化
-- 图片异步加载（Glide 缓存）
-- 列表虚拟化（RecyclerView）
-- 减少不必要的布局嵌套
-- 内存泄漏防护
-
-## 🐛 已知问题
-
-- 部分机型后台连接不稳定（已引导用户开启电池优化豁免）
-- 角标显示因厂商限制可能不完全支持
-
-## 📄 License
-
-本项目仅供学习和内部使用。
-
-## 👥 联系方式
-
-- GitHub: [YiB1201/taohuo](https://github.com/YiB1201/taohuo)
-- 项目地址: `F:\taohuo`
+</div>
 
 ---
 
-**最后更新**: 2026-08-11
+## 📑 目录
+
+- [一、项目简介](#一项目简介)
+- [二、技术栈](#二技术栈)
+- [三、功能清单](#三功能清单)
+- [四、开发阶段与里程碑](#四开发阶段与里程碑)
+- [五、关键实现细节](#五关键实现细节)
+- [六、踩坑记录与解决](#六踩坑记录与解决)
+- [七、安全设计汇总](#七安全设计汇总)
+- [八、部署与运维](#八部署与运维)
+- [九、后续计划](#九后续计划)
+
+---
+
+## 🎯 一、项目简介
+
+一个面向校园的二手闲置交易平台，支持 **商品发布 → 商品广场 → 商品详情 → 实时聊天 → 消息中心** 的完整闭环。用户可发布书籍、电子产品、日用品、食物等闲置物品，买家浏览后通过内置聊天与卖家实时沟通。
+
+> 📄 更详细的部署与配置说明见 [README](../README.md)。
+
+## 🧱 二、技术栈
+
+| 分层     | 技术                                                                                        | 说明                                               |
+| -------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| 前端     | 原生 HTML / CSS / JS（[index.html](../index.html)、[goods.html](../goods.html) 等）         | 无框架依赖，轻量、部署简单                         |
+| 后端     | [Express](https://expressjs.com/zh-cn/)（[Vercel](https://vercel.com) Serverless Function） | 单文件 API 网关：[`api/index.js`](../api/index.js) |
+| 数据库   | [Neon](https://neon.tech)（PostgreSQL，Serverless）                                         | 商品、账户、会话、消息持久化                       |
+| 实时通信 | [Ably](https://ably.com)（Pub/Sub + Chat SDK + Token 鉴权）                                 | 聊天消息、在线状态、新消息推送                     |
+| 图片存储 | [阿里云 OSS](https://www.aliyun.com/product/oss)（STS 临时凭证直传）                        | 浏览器直传，服务端只签发签名                       |
+| 认证     | [JWT](https://jwt.io)（HS256，7 天有效期）                                                  | 无状态会话，服务端只信任 token                     |
+
+## ✨ 三、功能清单
+
+- 🔐 **注册 / 登录 / 重置密码**：学号 + 手机号 + 年级班级注册，密码 bcrypt 加密，JWT 登录，支持"记住我"（[`js/auth.js`](../js/auth.js)）。
+- 📤 **商品发布**：分类、预估价、描述、多图上传；前端 Canvas 压缩（70% 质量）后再直传 OSS（[`js/publish.js`](../js/publish.js)、[`js/oss-upload.js`](../js/oss-upload.js)）。
+- 🏬 **商品广场**：分类筛选、关键词搜索、排序，实时更新统计看板；登录后自动隐藏自己发布的商品（[`js/goods.js`](../js/goods.js)）。
+- 🖼️ **商品详情**：多图预览、卖家信息、"联系卖家"一键发起会话（[`js/goods-detail.js`](../js/goods-detail.js)）。
+- 📦 **我的发布**：商品管理，支持上下架切换、修改预估价。
+- 💬 **实时聊天**：Ably Chat SDK 一对一聊天，历史消息持久化，未读消息小红点，消息中心会话列表（[`js/chat.js`](../js/chat.js)、[`js/notification.js`](../js/notification.js)、[`js/ably-manager.js`](../js/ably-manager.js)）。
+- 📢 **管理员能力**：管理员上线全局通报横幅（[`js/admin-banner.js`](../js/admin-banner.js)）。
+- 🎨 **辅助功能**：赞助按钮、页面转场动画、敏感内容过滤（[`js/sponsor.js`](../js/sponsor.js)、[`js/page-transitions.js`](../js/page-transitions.js)、[`js/content-filter.js`](../js/content-filter.js)）。
+
+## 🗺️ 四、开发阶段与里程碑
+
+| #   | 阶段        | 内容                                                     |
+| --- | ----------- | -------------------------------------------------------- |
+| 1   | 🏗️ 骨架搭建 | HTML 页面 + 通用样式 + 页面转场动效，确定整体视觉风格    |
+| 2   | 🔐 认证体系 | 注册/登录/重置密码 + JWT 签发与校验 + 前后端双向校验     |
+| 3   | 📦 商品链路 | OSS 直传签名 → 发布商品 → 广场列表 → 详情 → 我的发布管理 |
+| 4   | 💬 实时聊天 | Ably 集成 → 会话创建/复用 → 消息收发 → 未读标记          |
+| 5   | 🛡️ 安全加固 | 登录/注册/会话限流、图片来源校验、CORS 白名单、内容过滤  |
+| 6   | 🚀 部署上线 | Vercel + Neon + 自定义域名，接入 Vercel Analytics        |
+
+## 🔍 五、关键实现细节
+
+### 5.1 认证与安全
+
+- 服务端身份**一律以 JWT 为准**，不信任前端提交的 `student_id` / `username` / `sender_id` / `buyer_id`。
+- 登录、注册、重置密码、创建会话均做了**基于数据库的限流**（`auth_attempts` 表），按学号 / IP / 手机号维度计数，窗口过期自动重置，适配 Serverless 无内存态。
+- 商品图片 URL 校验必须来自受信任的 OSS 域名，防止注入任意外链。
+- CORS 采用**手动白名单反射**，兼容 `file://` 的 `null` origin 与本地开发。
+
+### 5.2 OSS 直传
+
+- 服务端通过 **RAM 角色 AssumeRole 获取 STS 临时凭证**，签发 OSS4-HMAC-SHA256 签名。
+- 上传目录按用户隔离（`products/<学号>/`），policy 限制 `Content-Type` 必须为图片、单文件 ≤ 10MB。
+- 前端先 Canvas 压缩（<100KB 跳过）再直传，降低存储与带宽成本。
+
+### 5.3 实时聊天
+
+- 使用 [`@ably/chat`](https://github.com/ably/ably-chat-js)（Chat SDK）实现房间级聊天，后端 [`/api/chat/token`](../api/index.js) 签发**最小权限 capability**：只授权用户参与过的会话 channel + 用户专属通知频道 + 全局管理员频道。
+- 会话创建时校验卖家归属（`publisher_student_id` 比对，历史数据为空则通过用户名反查兜底）。
+- 新会话 / 新消息通过 `chat:user:<id>` 频道实时推送，未读计数基于 `conversation_reads` 表计算。
+
+## 🐛 六、踩坑记录与解决
+
+> 💡 这些是开发过程中最值得沉淀的坑，均已在代码中修复。
+
+<details>
+<summary><b>1️⃣ Ably importmap 加载失败（ESM 命名导出）</b></summary>
+
+**现象**：`esm.sh` / `jsdelivr+esm` / `esm.run` 转换的 `ably` 只有 default 导出，`@ably/chat` 内部 `import { ErrorInfo } from 'ably'` 报错。
+
+**解决**：importmap 中 `ably` 改用 **data: URL 内联 shim**，从 default 导出补命名导出；且版本必须 ≥ 2.9.0（`@ably/chat@0.7.0` 依赖 ably@2.9.0，2.6.4 会报 `Invalid channel mode: ANNOTATION_PUBLISH`）。
+
+</details>
+
+<details>
+<summary><b>2️⃣ `file://` 下动态 `import()` 本地 ESM 被 CORS 拦截</b></summary>
+
+本地直接打开 HTML 时无法 import 本地 shim 文件，最终采用 data: URL 方案规避。
+
+</details>
+
+<details>
+<summary><b>3️⃣ Chat SDK 底层 channel 命名</b></summary>
+
+`rooms.get('chat:conversation:<id>')` 底层实际 channel 是 **`chat:conversation:<id>::$chat`**，事件名是 **`chat.message`** 而非 `message`；后端 token capability 必须同时授权 `::$chat` 后缀版本，否则订阅/发布被拒。
+
+</details>
+
+<details>
+<summary><b>4️⃣ 低层订阅与 Chat SDK 抢占 channel 冲突</b></summary>
+
+无 importmap 页面（index/goods/publish）用低层 `channels.get`，有 importmap 页面（chat/goods-detail）用 Chat SDK room；先低层占 channel 后再创建 room 会报 `Channels.get() cannot be used to set channel options that would cause the channel to reattach`。解决：按页面类型统一订阅方式，`AblyManager.joinRoom` 增加 `joinedRooms` 缓存复用。
+
+</details>
+
+<details>
+<summary><b>5️⃣ `student_id` 是 bigint 的类型陷阱</b></summary>
+
+`accounts.student_id` 为数字类型，后端返回数字导致 JWT / Ably / 数据库比较连环报错（`clientId must be a string`、`TEXT = bigint`）。
+
+**解决**：登录/注册返回时统一 `String(student_id)`；前端判定登录态只用"非空"不用 `typeof === 'string'`。
+
+</details>
+
+<details>
+<summary><b>6️⃣ `conversations.product_id`（TEXT）JOIN 商品表（UUID）类型不匹配</b></summary>
+
+直接 JOIN 报 `operator does not exist: text = uuid`，必须写 `ON c.product_id = p.id::text`。
+
+</details>
+
+<details>
+<summary><b>7️⃣ 登录信息存储键名错误</b></summary>
+
+曾误读 `localStorage.getItem('user')`，但存储键实际是 `userLoginInfo`，导致已登录也被判为未登录；统一改为通过 `window.getLoginInfo()` 读取（见 [`js/utils.js`](../js/utils.js)）。
+
+</details>
+
+## 🛡️ 七、安全设计汇总
+
+- ⏱️ **限流**：登录 5 次/15min（按学号）、10 次/15min（按 IP）；注册 10 次/小时（按 IP）；重置密码、创建会话同理。
+- 🙈 **防枚举**：登录失败统一返回"学号或密码不正确"，不区分账号是否存在。
+- 🔒 **越权防护**：商品 PATCH、会话消息、已读标记均校验归属与参与关系。
+- 🧹 **内容安全**：上传白名单图片类型 + 图片域名校验；内容过滤模块兜底。
+- 🗄️ **数据库访问**：全链路参数化查询（`sql` 模板），无字符串拼接注入面。
+
+## 🚀 八、部署与运维
+
+- 🌐 **访问域名**：[`taohuo.hsyz.online`](https://taohuo.hsyz.online)（Vercel 自定义域名绑定，生产环境通过该域名访问）。
+- ⚙️ **Vercel**：[`vercel.json`](../vercel.json) 配置 `/api/*` rewrite 到 Serverless Function；静态资源同域部署。
+- 🔑 **环境变量**：`DATABASE_URL`、`JWT_SECRET`、`ABLY_API_KEY`、`OSS_BUCKET`、`OSS_REGION`、`ALIBABA_CLOUD_*`、`ALLOWED_ORIGINS`。
+- 🗄️ **数据库迁移**：`.vscode/sql/` 目录下幂等建表 + 历史数据回填脚本（[`create_chat_tables.sql`](../.vscode/sql/create_chat_tables.sql)、[`ensure_publisher_student_id.sql`](../.vscode/sql/ensure_publisher_student_id.sql)、[`backfill_publisher_student_id.sql`](../.vscode/sql/backfill_publisher_student_id.sql)、[`add_conversation_reads.sql`](../.vscode/sql/add_conversation_reads.sql)）。
+- 📊 **分析统计**：接入 Vercel Web Analytics（`/_vercel/insights/script.js`），按自定义域名统计真实流量。
+
+## 📌 九、后续计划
+
+- [ ] 💖 商品收藏 / 点赞功能
+- [ ] ⭐ 卖家信誉评价体系
+- [ ] 🖼️ 图片懒加载与缩略图 CDN
+- [ ] 🛠️ 后台管理面板（用户/商品/举报审核）
+- [ ] 📱 移动端 PWA 支持
+
+
