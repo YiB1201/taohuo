@@ -81,3 +81,25 @@ jobs:
             app/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      - name: action-gitee-release
+        if: steps.check_tag.outputs.exists == 'false'
+        uses: nICEnnnnnnnLee/action-gitee-release@v2.0.0
+        with:
+    # 执行的操作类型: create_release, upload_asset, delete_release, delete_asset, update_asset
+          gitee_action: create_release
+    # Gitee 用户名, 项目URL中可获取
+          gitee_owner: LiuYong-Kang1201
+    # Gitee 项目名, 项目URL中可获取
+          gitee_repo: taohuo-release
+    # Gitee api token
+          gitee_token: ${{secrets.GITEE_TOKEN}}
+    # Gitee Tag 名称, 提倡以v字母为前缀做为Release名称，例如v1.0或者v2.3.4
+          gitee_tag_name: v${{ steps.version.outputs.version_name }}
+    # Gitee release 名称
+          gitee_release_name: v${{ steps.version.outputs.version_name }}
+    # 上传的附件列表(多个文件)
+          gitee_files: *.apk
+    # 上传的附件的本地路径(单个文件)
+          gitee_file_path: app/release/
