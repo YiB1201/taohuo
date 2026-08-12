@@ -101,8 +101,7 @@ jobs:
           # Gitee release 名称
           gitee_release_name: v${{ steps.version.outputs.version_name }}
           # 上传的附件列表(多个文件)
-          gitee_file_name: app-release.apk
-          gitee_file_path: app/release/app-release.apk
+          gitee_files: app/release/*.apk
            # Gitee release 描述
           gitee_release_body: |
             - 版本号: ${{ steps.version.outputs.version_name }}
