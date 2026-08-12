@@ -1,0 +1,78 @@
+name: Release2Gitee
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Find APK files in app/release
+        id: apk
+        run: |
+          APK_FILES=$(find app/release -name '*.apk' -type f 2>/dev/null | sort)
+          if [ -z "$APK_FILES" ]; then
+            echo "::error::No APK files found in app/release/"
+            exit 1
+          fi
+          echo "Found APK files:"
+          echo "$APK_FILES"
+          FIRST_APK=$(echo "$APK_FILES" | head -n1)
+          APK_BASENAME=$(basename "$FIRST_APK" .apk)
+          echo "apk_basename=$APK_BASENAME" >> $GITHUB_OUTPUT
+          echo "apk_count=$(echo "$APK_FILES" | wc -l | tr -d ' ')" >> $GITHUB_OUTPUT
+
+      - name: Read version from build.gradle.kts
+        id: version
+        run: |
+          VERSION_NAME=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts)
+          VERSION_CODE=$(grep -oP 'versionCode\s*=\s*\K\d+' app/build.gradle.kts)
+          TAG_NAME="v${VERSION_NAME}"
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION_NAME (Code: $VERSION_CODE, Tag: $TAG_NAME)"
+
+      - name: Check if tag already exists
+        id: check_tag
+        run: |
+          if git rev-parse "${{ steps.version.outputs.tag_name }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Tag ${{ steps.version.outputs.tag_name }} already exists, skipping release."
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Tag ${{ steps.version.outputs.tag_name }} does not exist, proceeding with release."
+          fi
+      - name: action-gitee-release
+        uses: nICEnnnnnnnLee/action-gitee-release@v2.0.0
+        with:
+          # 执行的操作类型: create_release, upload_asset, delete_release, delete_asset, update_asset
+          gitee_action: create_release
+          # Gitee 用户名, 项目URL中可获取
+          gitee_owner: LiuYong-Kang1201
+          # Gitee 项目名, 项目URL中可获取
+          gitee_repo: taohuo-release
+          gitee_target_commitish: master
+          gitee_upload_retry_times: 3
+          # Gitee api token
+          gitee_token: ${{secrets.GITEE_TOKEN}}
+          # Gitee Tag 名称, 提倡以v字母为前缀做为Release名称，例如v1.0或者v2.3.4
+          gitee_tag_name: v${{ steps.version.outputs.version_name }}
+          # Gitee release 名称
+          gitee_release_name: v${{ steps.version.outputs.version_name }}
+          # 上传的附件列表(多个文件)  
+          gitee_files: app/release/*.apk
+           # Gitee release 描述
+          body: |
+            ## 版本信息
+            - 版本号: ${{ steps.version.outputs.version_name }}
+            - 版本代码: ${{ steps.version.outputs.version_code }}
+            - 构建时间: ${{ github.event.head_commit.timestamp }}
+
+          
