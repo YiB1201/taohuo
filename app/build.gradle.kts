@@ -11,7 +11,7 @@ android {
         minSdk = 27
         targetSdk = 36
         versionCode = 1
-        versionName = "2.7"
+        versionName = "2.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -49,3 +49,4 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 }
+
